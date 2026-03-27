@@ -202,7 +202,13 @@ n_test = 1
 while True:
     k_test = p_true * n_test
     dist_test = beta(1 + k_test, 1 + n_test - k_test)
-    hdr_test = bda.stats.hdr_f(dist_test.pdf, 0.90, a=0.1, b=0.25)
+    
+    mu = dist_test.mean()
+    std = dist_test.std()
+    a_dyn = max(1e-5, mu - 5 * std)
+    b_dyn = min(1 - 1e-5, mu + 5 * std)
+    
+    hdr_test = bda.stats.hdr_f(dist_test.pdf, 0.90, a=a_dyn, b=b_dyn)
     
     if hdr_test[0][0] > p_fair:
         print(f"Uniform prior minimum n: {n_test}")
@@ -213,7 +219,13 @@ n_test2 = 1
 while True:
     k_test2 = p_true * n_test2
     dist_test2 = beta(alpha_prior + k_test2, beta_prior + n_test2 - k_test2)
-    hdr_test2 = bda.stats.hdr_f(dist_test2.pdf, 0.90, a=0.1, b=0.25)
+    
+    mu2 = dist_test2.mean()
+    std2 = dist_test2.std()
+    a_dyn2 = max(1e-5, mu2 - 5 * std2)
+    b_dyn2 = min(1 - 1e-5, mu2 + 5 * std2)
+    
+    hdr_test2 = bda.stats.hdr_f(dist_test2.pdf, 0.90, a=a_dyn2, b=b_dyn2)
     
     if hdr_test2[0][0] > p_fair:
         print(f"Informative prior minimum n: {n_test2}")
