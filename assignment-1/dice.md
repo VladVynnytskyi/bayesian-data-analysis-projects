@@ -93,6 +93,39 @@ slideshow:
 help(bda.stats.hdr_f)
 ```
 
+```{code-cell} ipython3
+from scipy.stats import beta
+
+n = np.sum(data)
+k = data[5]
+
+alpha_post = 1 + k
+beta_post = 1 + n - k
+dist = beta(alpha_post, beta_post)
+
+map_val = (alpha_post - 1) / (alpha_post + beta_post - 2)
+mean_val = dist.mean()
+median_val = dist.isf(0.5)
+
+print(f"MAP: {map_val}")
+print(f"Mean: {mean_val}")
+print(f"Median: {median_val}")
+
+x = np.linspace(0, 1, 1000)
+y = dist.pdf(x)
+
+plt.plot(x, y)
+plt.axvline(map_val, color='r')
+plt.axvline(mean_val, color='g')
+plt.axvline(median_val, color='k')
+plt.xlabel('Probability of six')
+plt.ylabel('Density')
+plt.show()
+
+hdr = bda.stats.hdr_f(dist.pdf, 0.90, a=1e-5, b=1-1e-5)
+print(f"90% HDR: {hdr}")
+```
+
 +++ {"editable": true, "slideshow": {"slide_type": ""}}
 
  In case of numerical problems you may need to constrain the (a,b) interval.
@@ -104,6 +137,41 @@ help(bda.stats.hdr_f)
 +++ {"editable": true, "slideshow": {"slide_type": ""}}
 
 Repeat the following but this time for the prior use Beta distribution with mean equal to 1/6 and standard deviation equal to 1/100.
+
+```{code-cell} ipython3
+mu = 1/6
+sigma = 1/100
+
+nu = (mu * (1 - mu)) / (sigma**2) - 1
+alpha_prior = mu * nu
+beta_prior = (1 - mu) * nu
+
+alpha_post2 = alpha_prior + k
+beta_post2 = beta_prior + n - k
+dist2 = beta(alpha_post2, beta_post2)
+
+map_val2 = (alpha_post2 - 1) / (alpha_post2 + beta_post2 - 2)
+mean_val2 = dist2.mean()
+median_val2 = dist2.isf(0.5)
+
+print(f"MAP: {map_val2}")
+print(f"Mean: {mean_val2}")
+print(f"Median: {median_val2}")
+
+x2 = np.linspace(0, 1, 1000)
+y2 = dist2.pdf(x2)
+
+plt.plot(x2, y2)
+plt.axvline(map_val2, color='r')
+plt.axvline(mean_val2, color='g')
+plt.axvline(median_val2, color='k')
+plt.xlabel('Probability of six')
+plt.ylabel('Density')
+plt.show()
+
+hdr2 = bda.stats.hdr_f(dist2.pdf, 0.90, a=0.1, b=0.3)
+print(f"90% HDR: {hdr2}")
+```
 
 +++ {"editable": true, "slideshow": {"slide_type": ""}}
 
@@ -125,6 +193,33 @@ with $\epsilon=0.01$. Assuming uniform prior estimate  how many throws are neede
 +++ {"editable": true, "slideshow": {"slide_type": ""}, "tags": ["hint"]}
 
 __Hint__: This is a binomial distribution with $p=\frac{1}{6}+\epsilon$. Assume that for large $n$ the number of sixes is equal to $p\cdot n$. Calculate the posterior and 90% HDR. By trial and error estimate smallest $n$ such that $p=\frac{1}{6}$ lies outside of the HDR.
+
+```{code-cell} ipython3
+p_true = 1/6 + 0.01
+p_fair = 1/6
+
+n_test = 1
+while True:
+    k_test = p_true * n_test
+    dist_test = beta(1 + k_test, 1 + n_test - k_test)
+    hdr_test = bda.stats.hdr_f(dist_test.pdf, 0.90, a=0.1, b=0.25)
+    
+    if hdr_test[0][0] > p_fair:
+        print(f"Uniform prior minimum n: {n_test}")
+        break
+    n_test += 1
+
+n_test2 = 1
+while True:
+    k_test2 = p_true * n_test2
+    dist_test2 = beta(alpha_prior + k_test2, beta_prior + n_test2 - k_test2)
+    hdr_test2 = bda.stats.hdr_f(dist_test2.pdf, 0.90, a=0.1, b=0.25)
+    
+    if hdr_test2[0][0] > p_fair:
+        print(f"Informative prior minimum n: {n_test2}")
+        break
+    n_test2 += 1
+```
 
 +++ {"editable": true, "slideshow": {"slide_type": ""}}
 
