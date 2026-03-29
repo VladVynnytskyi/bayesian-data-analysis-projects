@@ -221,6 +221,49 @@ plt.show()
 
 Write an iterative procedure that calculates all the posteriors ans all MAP estimates corresponding to $1,\ldots,100$ measurements. Plot first 10 and last 10 posterior distributions. What is the final MAP? Find 95% probability symmetric interval around this value.
 
+```{code-cell} ipython3
+---
+editable: true
+slideshow:
+  slide_type: ''
+---
+posteriors = []
+maps = []
+
+current_posterior = prior.copy()
+for i in range(100):
+    likelihood = cauchy(flash_x[i], xs, h)
+    current_posterior = likelihood * current_posterior
+    current_posterior /= current_posterior.sum()
+    posteriors.append(current_posterior.copy())
+    maps.append(xs[np.argmax(current_posterior)])
+
+fig, axes = plt.subplots(2, 1, figsize=(12, 10))
+
+for i in range(10):
+    axes[0].plot(xs, posteriors[i], label=f'n={i+1}')
+axes[0].set_title('First 10 posteriors')
+axes[0].set_xlabel('$x_{lh}$')
+axes[0].legend(fontsize=7)
+
+for i in range(90, 100):
+    axes[1].plot(xs, posteriors[i], label=f'n={i+1}')
+axes[1].set_title('Last 10 posteriors')
+axes[1].set_xlabel('$x_{lh}$')
+axes[1].legend(fontsize=7)
+
+plt.tight_layout()
+plt.show()
+
+final_map = maps[-1]
+print(f"Final MAP (n=100): {final_map:.4f}")
+
+cumsum = np.cumsum(posteriors[-1])
+lower = xs[np.searchsorted(cumsum, 0.025)]
+upper = xs[np.searchsorted(cumsum, 0.975)]
+print(f"95% interval: [{lower:.4f}, {upper:.4f}]")
+```
+
 +++ {"editable": true, "slideshow": {"slide_type": ""}}
 
 ## Problem 4
