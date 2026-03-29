@@ -191,6 +191,28 @@ Add the plot of the posterior after two measurments.
 
 **Hint** perform same calculations as in problem 1, but use the calculated posterior as the new prior. Calculate the MAP estimate.
 
+```{code-cell} ipython3
+---
+editable: true
+slideshow:
+  slide_type: ''
+---
+likelihood2 = cauchy(flash_x[1], xs, h)
+posterior2 = likelihood2 * posterior1
+posterior2 /= posterior2.sum()
+
+map2 = xs[np.argmax(posterior2)]
+print(f"MAP after 2 measurements: {map2:.4f}")
+
+plt.plot(xs, posterior1, label='posterior (n=1)')
+plt.plot(xs, posterior2, label='posterior (n=2)')
+plt.xlabel('$x_{lh}$')
+plt.ylabel('$p(x_{lh}|data)$')
+plt.title('Posterior after 1 and 2 measurements')
+plt.legend()
+plt.show()
+```
+
 +++ {"editable": true, "slideshow": {"slide_type": ""}}
 
 ## Problem 3
