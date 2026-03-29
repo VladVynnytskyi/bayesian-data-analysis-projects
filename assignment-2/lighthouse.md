@@ -154,6 +154,33 @@ Find and printout the maximal a posteriori (MAP) estimate for $x_{lh}$.
 flash_x[0]
 ```
 
+```{code-cell} ipython3
+---
+editable: true
+slideshow:
+  slide_type: ''
+---
+def cauchy(x, x_lh, h):
+    return h / (np.pi * ((x - x_lh)**2 + h**2))
+
+prior = np.ones(len(xs))
+prior /= prior.sum()
+
+likelihood1 = cauchy(flash_x[0], xs, h)
+posterior1 = likelihood1 * prior
+posterior1 /= posterior1.sum()
+
+map1 = xs[np.argmax(posterior1)]
+print(f"MAP after 1 measurement: {map1:.4f}")
+
+plt.plot(xs, posterior1, label='posterior (n=1)')
+plt.xlabel('$x_{lh}$')
+plt.ylabel('$p(x_{lh}|data)$')
+plt.title('Posterior after 1 measurement')
+plt.legend()
+plt.show()
+```
+
 +++ {"editable": true, "slideshow": {"slide_type": ""}}
 
 ## Problem 2
