@@ -282,3 +282,22 @@ slideshow:
 ---
 from scipy.special import logsumexp
 ```
+
+```{code-cell} ipython3
+---
+editable: true
+slideshow:
+  slide_type: ''
+---
+def compute_posterior(xs, prior, measurements):
+    log_posterior = np.log(prior)
+    for x in measurements:
+        log_likelihood = np.log(cauchy(x, xs, h))
+        log_posterior = log_posterior + log_likelihood
+        log_posterior -= logsumexp(log_posterior)
+    return np.exp(log_posterior)
+
+posterior_all = compute_posterior(xs, prior, flash_x[:100])
+map_all = xs[np.argmax(posterior_all)]
+print(f"MAP (all measurements): {map_all:.4f}")
+```
