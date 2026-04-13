@@ -490,11 +490,37 @@ def log_p_many(x_lh, h_lh, flash):
 Plot the (log)posterior distribution after two flashes. Calculate the MAP estimate, as well as the marginal distributions and MAP estimates for each variable separately.
 
 ```{code-cell} ipython3
-map_2
-```
+log_p_array2 = log_p_many(x_lh_grid, h_grid, flash_x[:2])
+log_posterior2 = log_p_array2 + log_prior_array
+log_posterior2 -= logsumexp(log_posterior2)
 
-```{code-cell} ipython3
-log_p_many(-110,1,flash_x[:2])
+map_idx2 = np.unravel_index(np.argmax(log_posterior2), log_posterior2.shape)
+print(f"Joint MAP (2 flashes): x_lh = {x_lhs[map_idx2[1]]}, h = {hs[map_idx2[0]]}")
+
+log_marg_x2 = logsumexp(log_posterior2, axis=0)
+log_marg_h2 = logsumexp(log_posterior2, axis=1)
+
+print(f"Marginal MAP x_lh: {x_lhs[np.argmax(log_marg_x2)]}")
+print(f"Marginal MAP h: {hs[np.argmax(log_marg_h2)]}")
+
+levels = 20
+max_log_posterior2 = log_posterior2.max()
+cs = plt.contourf(x_lhs, hs, log_posterior2 - max_log_posterior2, levels=levels)
+plt.contour(x_lhs, hs, log_posterior2 - max_log_posterior2, colors='black', linewidths=0.5, levels=levels)
+plt.colorbar(cs)
+plt.xlabel('x_lh')
+plt.ylabel('h')
+plt.show()
+
+plt.plot(x_lhs, np.exp(log_marg_x2))
+plt.xlabel('x_lh')
+plt.ylabel('Marginal Probability')
+plt.show()
+
+plt.plot(hs, np.exp(log_marg_h2))
+plt.xlabel('h')
+plt.ylabel('Marginal Probability')
+plt.show()
 ```
 
 +++ {"editable": true, "slideshow": {"slide_type": ""}}
