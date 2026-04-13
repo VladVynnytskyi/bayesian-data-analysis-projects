@@ -358,6 +358,13 @@ Depending on the interval that you have chosen for the prior, you will probably 
 
 __Hint:__ Use the `numpy.argmax` and `numpy.unravel_index` functions.
 
+```{code-cell} ipython3
+map_idx = np.unravel_index(np.argmax(posterior1), posterior1.shape)
+map_h = hs[map_idx[0]]
+map_x = x_lhs[map_idx[1]]
+print(f"Joint MAP: x_lh = {map_x}, h = {map_h}")
+```
+
 +++ {"editable": true, "slideshow": {"slide_type": ""}}
 
 ### Marginal distributions
@@ -369,6 +376,25 @@ You can obtain the marginal distribution $p(x_{lh}|x_0)$ by summing the array al
 +++ {"editable": true, "slideshow": {"slide_type": ""}}
 
 Similarly the distribution $p(h|x_0)$ will be obtained by summing  over the axis one.
+
+```{code-cell} ipython3
+marg_x = posterior1.sum(axis=0)
+marg_h = posterior1.sum(axis=1)
+
+map_marg_x = x_lhs[np.argmax(marg_x)]
+map_marg_h = hs[np.argmax(marg_h)]
+print(f"Marginal MAP: x_lh = {map_marg_x}, h = {map_marg_h}")
+
+plt.plot(x_lhs, marg_x)
+plt.xlabel('x_lh')
+plt.ylabel('Marginal Probability')
+plt.show()
+
+plt.plot(hs, marg_h)
+plt.xlabel('h')
+plt.ylabel('Marginal Probability')
+plt.show()
+```
 
 +++ {"editable": true, "slideshow": {"slide_type": ""}}
 
@@ -422,6 +448,17 @@ Because logarithm is a monotonically increasing function we can calculate the MA
 +++ {"editable": true, "slideshow": {"slide_type": ""}}
 
 Again we have to partially sum the `log_posterior1` array. But before doing that we have to exponentiate it. To avoid numerical problems it is best to use the `scipy.special.logsumexp` function.
+
+```{code-cell} ipython3
+map_log_idx = np.unravel_index(np.argmax(log_posterior1), log_posterior1.shape)
+print(f"Log Joint MAP: x_lh = {x_lhs[map_log_idx[1]]}, h = {hs[map_log_idx[0]]}")
+
+log_marg_x = logsumexp(log_posterior1, axis=0)
+log_marg_h = logsumexp(log_posterior1, axis=1)
+
+print(f"Log Marginal MAP: x_lh = {x_lhs[np.argmax(log_marg_x)]}")
+print(f"Log Marginal MAP: h = {hs[np.argmax(log_marg_h)]}")
+```
 
 +++ {"editable": true, "slideshow": {"slide_type": ""}}
 
