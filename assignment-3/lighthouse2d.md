@@ -474,8 +474,11 @@ editable: true
 slideshow:
   slide_type: ''
 ---
-def log_p_many(x_lh, h_lh, flash): # flash is an array of flash positions
-  return 0     
+def log_p_many(x_lh, h_lh, flash):
+    log_prob = np.zeros_like(x_lh)
+    for f in flash:
+        log_prob += np.log(h_lh) - np.log(np.pi) - np.log((f - x_lh)**2 + h_lh**2)
+    return log_prob
 ```
 
 +++ {"editable": true, "slideshow": {"slide_type": ""}}
