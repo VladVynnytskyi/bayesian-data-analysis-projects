@@ -115,7 +115,20 @@ with pm.Model() as model_bin35:
     
     pm.sample_posterior_predictive(trace_bin35, extend_inferencedata=True)
 
-az.plot_ppc(trace_bin35)
+y_pred_35 = trace_bin35.posterior_predictive['y_35'].values.reshape(-1, len(data))
+
+fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+
+for i in range(100):
+    plot_discrete_hist(y_pred_35[i], ax=axes[0], color='gray', alpha=0.1, density=True)
+plot_discrete_hist(data, ax=axes[0], color='blue', alpha=0.5, density=True)
+axes[0].set_title('Data vs. Simulated (Binomial n=35)')
+
+axes[1].hist(y_pred_35.var(axis=1), bins=30, color='gray', edgecolor='black')
+axes[1].axvline(data.var(), color='red', linestyle='dashed', linewidth=2, label='Observed Variance')
+axes[1].set_title('PPC: Variance Check')
+axes[1].legend()
+
 plt.title('PPC: Binomial n=35')
 plt.show()
 ```
@@ -138,7 +151,20 @@ with pm.Model() as model_bin45:
     
     pm.sample_posterior_predictive(trace_bin45, extend_inferencedata=True)
 
-az.plot_ppc(trace_bin45)
+y_pred_45 = trace_bin45.posterior_predictive['y_45'].values.reshape(-1, len(data))
+
+fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+
+for i in range(100):
+    plot_discrete_hist(y_pred_45[i], ax=axes[0], color='gray', alpha=0.1, density=True)
+plot_discrete_hist(data, ax=axes[0], color='blue', alpha=0.5, density=True)
+axes[0].set_title('Data vs. Simulated (Binomial n=45)')
+
+axes[1].hist(y_pred_45.var(axis=1), bins=30, color='gray', edgecolor='black')
+axes[1].axvline(data.var(), color='red', linestyle='dashed', linewidth=2, label='Observed Variance')
+axes[1].set_title('PPC: Variance Check')
+axes[1].legend()
+
 plt.title('PPC: Binomial n=45')
 plt.show()
 ```
@@ -169,8 +195,21 @@ with pm.Model() as model_pois:
     
     pm.sample_posterior_predictive(trace_pois, extend_inferencedata=True)
 
-az.plot_ppc(trace_pois)
 plt.title('PPC: Poisson')
+y_pred_pois = trace_pois.posterior_predictive['y_pois'].values.reshape(-1, len(data))
+
+fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+
+for i in range(100):
+    plot_discrete_hist(y_pred_pois[i], ax=axes[0], color='gray', alpha=0.1, density=True)
+plot_discrete_hist(data, ax=axes[0], color='blue', alpha=0.5, density=True)
+axes[0].set_title('Data vs. Simulated (Poisson)')
+
+axes[1].hist(y_pred_pois.var(axis=1), bins=30, color='gray', edgecolor='black')
+axes[1].axvline(data.var(), color='red', linestyle='dashed', linewidth=2, label='Observed Variance')
+axes[1].set_title('PPC: Variance Check')
+axes[1].legend()
+
 plt.show()
 ```
 
