@@ -16,7 +16,8 @@ The projects are implemented using Python and standard scientific computing libr
 * `assignment-2/` — Estimating the position of a lighthouse using Bayesian inference and the Cauchy distribution (1D, grid method).
 * `assignment-3/` — Estimating the position and height of a lighthouse using 2D joint posterior inference (grid method).
 * `assignment-4/` — Estimating the lighthouse position and height using PyMC and MCMC sampling.
-* *(More projects will be added here as the course progresses)*
+* `assignment-5/` — Bayesian model selection for discrete distributions (Binomial n=35, Binomial n=45, Poisson) using PPC and LOO cross-validation.
+* `assignment-6/` — Bayesian quadratic regression: fitting a polynomial with `curve_fit` and PyMC, posterior uncertainty estimation.
 ## 💡 About This Repository
 This repository serves as a personal showcase of solving probability and statistics problems using the Bayesian approach. Instead of theoretical lectures, this workspace is dedicated purely to code implementations, problem-solving, and data visualization.
 
